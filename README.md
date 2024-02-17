@@ -1,1 +1,1 @@
-# p2-2024v
+Programming 2, 2024 - labs materials (scripts, notebooks,...)
