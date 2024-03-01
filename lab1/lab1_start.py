@@ -24,7 +24,7 @@ sole input argument.
 
 #%%
 # Test the function
-# factorial(5)
+# print(factorial(5))
 
 
 #%%
@@ -108,13 +108,15 @@ Scenario:
 the function terminates. 
 - If when guessing, the user enters a number that is out of the bounds 
 (less than 1 or greater than 9), or a character that is not a number, 
-they should be informed that only single digit values are allowed.
+they should be informed that only single digit values are allowed. This 
+does not count as an unsuccessful guessing attempt.
 
 Hints: 
 - you can use function 'randint' from 'random' package to generate a number to
 be guessed in the game
 - the 'isdigit' string function can be used to check if the user's input is a number 
 """
+
 
 
 #%%
@@ -126,20 +128,30 @@ be guessed in the game
 if __name__ == '__main__':
     pass
 
+    # Task 1
     # odd_or_even()
-    #
-    # factorial(7)
-    #
-    # a = [31, 72, 13, 41, 5, 16, 87, 98, 9]
-    # print("3rd lowest in [31, 72, 13, 41, 5, 16, 87, 98, 9]:")
-    # print(nth_lowest(a, 3))
-    # print("6th lowest in ['f', 'r', 't', 'a', 'b', 'y', 'j', 'd', 'c']:")
-    # print(nth_lowest(['f', 'r', 't', 'a', 'b', 'y', 'j', 'd', 'c'], 6))
-    # print("2nd lowest in 'today':")
-    # print(nth_lowest('today', 2))
-    #
-    # print(list_stats([3.4, 5.6, -4.2, -5.6, 9, 1.2, 11.3, -23.45, 81]))
-    #
+
+    # Task 2
+    # print(factorial(7))
+
+    # Task 3
+    # numbers  = [31, 72, 13, 41, 5, 16, 87, 98, 9]
+    # print(f"3rd lowest among numbers: {numbers}:")
+    # print(nth_lowest(numbers,3))
+
+    # letters = ['f', 'r', 't', 'a', 'b', 'y', 'j', 'd', 'c']
+    # print(f"6th lowest among letters: {letters}:")
+    # print(nth_lowest(letters, 6))
+
+    # s = "today"
+    # print(f"2nd lowest in string: '{s}':")
+    # print(nth_lowest(s, 2))
+
+    # Task 4
+    # print(list_stats([3.4, 5.6, -4.2, -5.6, 9, 1.2, 11.3, -23.45, -81]))
+
+    # Task 5
     # list_operations([1, 1, 2, 3, 5, 8, 13, 5, 21, 34, 55, 89], 20)
-    #
+
+    # Task 6
     # guessing_game()
