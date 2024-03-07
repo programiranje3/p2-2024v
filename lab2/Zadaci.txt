@@ -35,8 +35,9 @@ Dodatna uputstva:
 
 Zadatak 4
 
-Napišite funkciju (provera_lozinki) koja prihvata niz lozinki odvojenih zarezima
-i proverava njihovu validnost koristeći sledeće kriterijume:
+Napišite funkciju (provera_lozinki) koja prihvata string koji sadrzi lozinke
+za proveru odvojene zarezom. Funkcija proverava njihovu validnost koristeći
+sledeće kriterijume:
 1. Najmanje 1 slovo između [a-z] tj. najmanje 1 malo slovo
 2. Najmanje 1 broj između [0-9] tj. najmanje 1 cifra
 3. Najmanje 1 slovo između [A-Z] tj. najmanje 1 veliko slovo
