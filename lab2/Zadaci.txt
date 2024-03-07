@@ -51,7 +51,7 @@ Zadatak 5
 
 Napišite funkciju (sve_parne_cifre) koja pronalazi cele brojeve između 100 i 400
 (uključujući i ove brojeve) gde je svaka cifra broja parna. Brojeve koji odgovaraju
-ovom kriterijumu treba prikazati kao sekvencu odvojenu zarezima.
+ovom kriterijumu treba prikazati kao string u kome su brojevi odvojeni zarezom.
 
 
 Zadatak 6
