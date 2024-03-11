@@ -76,7 +76,7 @@ Na primer: {ime:Bob, godine:19, rezultat:55.5}
 Funkcija računa i ispisuje sledeće statistike:
 
 - prosečne (srednje) godine članova tima
-- medijanu, prvi i treći kvartil za rezultate tima
+- ime igrača sa najnižim rezultatom među onima mlađim od 21 godine 
 - ime igrača sa najvišim rezultatom među onima mlađim od 21 godine
 
 Na kraju, funkcija ispisuje listu članova sortiranu po rezultatima članova (od najvišeg do najnižeg).
