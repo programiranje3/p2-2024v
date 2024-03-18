@@ -128,8 +128,8 @@ def team_stats(team_data):
 
     mean_age = mean([member['age'] for member in team_data])
     print(f"Average age of team members: {mean_age}")
-    q1, mdn, q3 = quantiles([member['score'] for member in team_data])
-    print(f"Team score stats, given as Mdn (Q1, Q3)): {mdn}({q1:.2f},{q3:.2f})")
+    worst_under21 = min([member for member in team_data if member['age'] < 21], key=itemgetter('score'))
+    print(f"Worst player under 21 is {worst_under21['name']}")
     best_under21 = max([member for member in team_data if member['age'] < 21], key=itemgetter('score'))
     print(f"Best player under 21 is {best_under21['name']}")
 
