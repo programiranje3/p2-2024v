@@ -21,7 +21,7 @@ Kreirajte klasu `Putnik` sa sledećim metodama:
   * negativan test bio pre manje od 3 dana
   Napomena: za formate datuma pogledajte tabelu: https://docs.python.org/3/c-api/datetime.html
 
-* Statička metoda `covid_bezbedan_Francuz` za kreiranje putnika iz Francuske koji je COVID bezbedan
+* Class metoda `covid_bezbedan_Francuz` za kreiranje putnika iz Francuske koji je COVID bezbedan
 (alternativni konstruktor); metoda prima ime i broj pasoša putnika.
 
 * Metoda koja proverava jednakost datog objekta klase `Putnik` i drugog objekta koji se prosleđuje metodi kao
@@ -29,7 +29,7 @@ ulazni parametar (__eq__); dva putnika se smatraju jednakim ako su iz iste zemlj
 
 Kreirajte klasu `Let` sa sledećim elementima:
 
-* Statički atribut `poletanje_dt_format` koji predstavlja očekivani format za datum i vreme poletanja;
+* Class atribut `poletanje_dt_format` koji predstavlja očekivani format za datum i vreme poletanja;
   vrednost atributa je "%Y-%m-%d %H:%M"
 
 * Konstruktor (__init__) koji prima dva parametra i koristi ih za inicijalizaciju atributa:
