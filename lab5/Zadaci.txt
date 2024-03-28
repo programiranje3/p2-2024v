@@ -19,7 +19,8 @@ Kreirajte klasu `Putnik` sa sledećim metodama:
   Metoda postavlja `COVID_bezbedan` atribut na True ako je:
   * (poslednja) vakcinacija bila u poslednjih 365 dana ILI
   * negativan test bio pre manje od 3 dana
-  Napomena: za formate datuma pogledajte tabelu: https://docs.python.org/3/c-api/datetime.html
+  Napomena: za formate datuma pogledajte tabelu:
+  https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
 
 * Class metoda `covid_bezbedan_Francuz` za kreiranje putnika iz Francuske koji je COVID bezbedan
 (alternativni konstruktor); metoda prima ime i broj pasoša putnika.
