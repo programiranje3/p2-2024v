@@ -44,6 +44,43 @@ class Let:
         self.putnici.append(obj)
         print(f"Putnik {obj.ime} je uspesno dodat u listu putnika")
 
+    def __str__(self):
+        let_str = f"Let {self.broj_leta}:\n"
+        let_str += f"Planirano vreme poletanja: {self.vreme_poletanja_str()}\n"
+        if len(self.putnici) == 0:
+            let_str += "Putnici: jos uvek nema prijavljenih putnika"
+        else:
+            let_str += "Putnici:\n" + "\n".join([str(p) for p in self.putnici])
+        return let_str
+
+
+    def vreme_poletanja_str(self):
+        if not self.vreme_poletanja:
+            return 'nepoznato'
+        return datetime.strftime(self.vreme_poletanja, Let.poletanje_dt_format)
+
+
+    def vreme_do_poletanja(self):
+        if not self.vreme_poletanja:
+            return None
+        poletanja_delta = self.vreme_poletanja - datetime.now()
+        delta_dani = poletanja_delta.days
+        delta_sati, ostatak_sec = divmod(poletanja_delta.seconds, 3600)
+        delta_mins = ostatak_sec // 60
+        return delta_dani, delta_sati, delta_mins
+
+
+    def __iter__(self):
+        self.__indeks_sledeceg = 0
+        return self
+
+    def __next__(self):
+        if self.__indeks_sledeceg == len(self.putnici):
+            raise StopIteration
+
+        sledeci_putnik = self.putnici[self.__indeks_sledeceg]
+        self.__indeks_sledeceg += 1
+        return sledeci_putnik
 
 
 if __name__ == '__main__':
@@ -72,27 +109,28 @@ if __name__ == '__main__':
 
     print(f"\nPodaci o letu {lh1411.broj_leta} nakon dodavanja putnika na let:\n")
     print(lh1411)
+
     print()
 
-    # do_poletanja = lh1411.vreme_do_poletanja()
-    # if do_poletanja:
-    #     dani, sati, mins = do_poletanja
-    #     print(f"Vreme preostalo do poletanja leta {lh1411.broj_leta}: "
-    #           f"{dani} dana, {sati} sati, i {mins} minuta")
-    #
-    # print()
-    #
-    # print("\nPUTNICI NA LETU LH1411 (iter / next):")
-    # p_iter = iter(lh1411)
-    # try:
-    #     while True:
-    #         print(next(p_iter))
-    # except StopIteration:
-    #     print("Svi putnici su izlistani")
-    #
-    # print()
-    # print("\nPUTNICI NA LETU LH1411 (FOR petlja):")
-    # for p in iter(lh1411):
-    #     print(p)
+    do_poletanja = lh1411.vreme_do_poletanja()
+    if do_poletanja:
+        dani, sati, mins = do_poletanja
+        print(f"Vreme preostalo do poletanja leta {lh1411.broj_leta}: "
+              f"{dani} dana, {sati} sati, i {mins} minuta")
+
+    print()
+
+    print("\nPUTNICI NA LETU LH1411 (iter / next):")
+    p_iter = iter(lh1411)
+    try:
+        while True:
+            print(next(p_iter))
+    except StopIteration:
+        print("Svi putnici su izlistani")
+
+    print()
+    print("\nPUTNICI NA LETU LH1411 (FOR petlja):")
+    for p in iter(lh1411):
+        print(p)
 
 
