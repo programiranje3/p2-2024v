@@ -48,17 +48,7 @@ def get_athletes_names(url):
     :param url: url of the page to scrape data from
     :return: a list of athletes' names
     """
-    athletes_names = from_csv(Path.cwd() / NAMES_CSV_FILE)
-    if not athletes_names:
-        print(f"Collecting athletes' names from the following web page: {url}")
-        athletes_names = scrape_athletes_names(url)
-        print(f"... done")
-
-        to_csv(Path.cwd() / NAMES_CSV_FILE, ['athlete_name'], athletes_names)
-    else:
-        athletes_names = [athlete[0] for athlete in athletes_names]
-
-    return athletes_names
+    pass
 
 
 def scrape_athletes_names(url):
@@ -69,28 +59,7 @@ def scrape_athletes_names(url):
     :param url: url of the page to scrape data from
     :return: a list of athletes' names
     """
-    chrome_webdriver = get_chrome_web_driver()
-    chrome_webdriver.get(url)
-    page_content = chrome_webdriver.page_source
-    if not page_content:
-        raise RuntimeError(f"Could not collect athletes' names from {url}. Cannot proceed!")
-
-    page_soup = BeautifulSoup(page_content, "html.parser")
-    if not page_soup:
-        raise RuntimeError(f"Could not parse the content from the given web page ({url}). Cannot proceed!")
-
-    atheletes_names = []
-    content_div = page_soup.find(name='div', attrs={'id':'content'})
-    list_items = content_div.find(name='ol').find_all(name="li")
-    for list_item in list_items:
-        strong_tag = list_item.find(name="strong")
-        if strong_tag and strong_tag.string:
-            # atheletes_names.append(strong_tag.text.strip())
-            atheletes_names.append(strong_tag.string.strip())
-        elif strong_tag and strong_tag.strings:
-            atheletes_names.append(list(strong_tag.stripped_strings)[-1])
-
-    return atheletes_names
+    pass
 
 
 def get_chrome_web_driver():
@@ -99,9 +68,7 @@ def get_chrome_web_driver():
 
     :return: Selenium web driver for Chrome browser
     """
-    options = ChromeOptions()
-    options.add_argument("headless")
-    return webdriver.Chrome(options=options)
+    pass
 
 
 def to_csv(fpath, header, data):
@@ -113,11 +80,7 @@ def to_csv(fpath, header, data):
     :param data: data to store; expected as a list or a tuple
     :return: nothing
     """
-    try:
-        df = pd.DataFrame(data=data, columns=header)
-        df.to_csv(fpath, index=False)
-    except OSError as os_err:
-        stderr.write(f"Error occurred when trying to write data to csv file {fpath}:\n{os_err}\n")
+    pass
 
 
 def from_csv(fpath):
@@ -127,9 +90,7 @@ def from_csv(fpath):
     :param fpath: path to the csv file with the data
     :return: the content of the csv file as a list; None if, for any reason, reading from file was unsuccessful
     """
-    df = pd.read_csv(fpath)
-    # return [tuple(row) for index, row in df.iterrows()]
-    return list(df.to_records(index=False))
+    pass
 
 
 def collect_athletes_data(athletes_names):
@@ -137,13 +98,13 @@ def collect_athletes_data(athletes_names):
     The function puts several parts together:
     - iterates over the list of athletes' names to retrieve the country for each
     athlete by 'consulting' their Wikipedia page
-    - stores the collected data in a json file
+    - stores the collected data in a csv file
     - prints names of athletes whose birthplace data could not have been collected
 
     :param athletes_names: list with athlete names
     :return: list of athlete name and origin pairs
     """
-
+    pass
 
 
 def retrieve_country_of_origin(name, web_driver):
@@ -192,10 +153,12 @@ def most_represented_countries(athletes_list):
 
 if __name__ == '__main__':
 
-    top_athletes_url = 'https://ivansmith.co.uk/?page_id=475'
-    try:
-        athletes_names = get_athletes_names(top_athletes_url)
-        # athletes_data = collect_athletes_data(athletes_names)
-        # most_represented_countries(athletes_data)
-    except RuntimeError as err:
-        stderr.write(f"Terminating the program due to the following runtime error:\n{err}")
+    pass
+
+    # top_athletes_url = 'https://ivansmith.co.uk/?page_id=475'
+    # try:
+    #     athletes_names = get_athletes_names(top_athletes_url)
+    #     # athletes_data = collect_athletes_data(athletes_names)
+    #     # most_represented_countries(athletes_data)
+    # except RuntimeError as err:
+    #     stderr.write(f"Terminating the program due to the following runtime error:\n{err}")
