@@ -48,7 +48,21 @@ def get_athletes_names(url):
     :param url: url of the page to scrape data from
     :return: a list of athletes' names
     """
-    pass
+
+    athletes_names = from_csv(Path.cwd() / NAMES_CSV_FILE)
+    if athletes_names:
+        # from_csv f. returns a list of tuples
+        athletes_names = [athlete_tuple[0] for athlete_tuple in athletes_names]
+    else:
+        print("Getting a list of athletes' names...")
+        athletes_names = scrape_athletes_names(url)
+        print('...done')
+
+        print(f'Gathered names for {len(athletes_names)} athletes.')
+
+        to_csv(Path.cwd() / NAMES_CSV_FILE, ["athlete_name"], athletes_names)
+
+    return athletes_names
 
 
 def scrape_athletes_names(url):
@@ -59,7 +73,30 @@ def scrape_athletes_names(url):
     :param url: url of the page to scrape data from
     :return: a list of athletes' names
     """
-    pass
+
+    athletes_names = list()
+
+    webdriver = get_chrome_web_driver()
+    if not webdriver:
+        raise RuntimeError("An error occurred while setting up web driver!")
+
+    webdriver.get(url)
+    page_content = webdriver.page_source
+
+    page_soup = BeautifulSoup(page_content, features='html.parser')
+    if not page_soup:
+        raise RuntimeError(f"Could not parse content from URL: {url}. Cannot proceed!")
+
+    div_element = page_soup.find('div', {'id':'content'})
+    for li in div_element.find('ol').find_all('li'):
+        strong_tag = li.find(name="strong")
+        if strong_tag and strong_tag.string:
+            athletes_names.append(strong_tag.string.strip())
+        elif strong_tag and strong_tag.strings:
+            name = list(strong_tag.stripped_strings)[-1]
+            athletes_names.append(name)
+
+    return athletes_names
 
 
 def get_chrome_web_driver():
@@ -68,7 +105,9 @@ def get_chrome_web_driver():
 
     :return: Selenium web driver for Chrome browser
     """
-    pass
+    options = ChromeOptions()
+    options.add_argument('headless') # to prevent browser from opening when extracting content of a web page
+    return webdriver.Chrome(options=options)
 
 
 def to_csv(fpath, header, data):
@@ -80,7 +119,11 @@ def to_csv(fpath, header, data):
     :param data: data to store; expected as a list or a tuple
     :return: nothing
     """
-    pass
+    try:
+        df = pd.DataFrame(data, columns=header)
+        df.to_csv(fpath, index=False)
+    except OSError as os_err:
+        stderr.write(f"The following error occurred while writing athletes' data to file:\n{os_err}\n")
 
 
 def from_csv(fpath):
@@ -90,7 +133,17 @@ def from_csv(fpath):
     :param fpath: path to the csv file with the data
     :return: the content of the csv file as a list; None if, for any reason, reading from file was unsuccessful
     """
-    pass
+    try:
+        df = pd.read_csv(fpath)
+        # Option 1
+        return list(df.to_records(index=False))
+        # Option 2
+        # return [tuple(row) for index, row in df.iterrows()]
+    except OSError as os_err:
+        stderr.write(f"The following error occurred while reading athletes' data from file {fpath}:\n{os_err}\n")
+        stderr.write("Athletes' data will be collected again.\n")
+    return None
+
 
 
 def collect_athletes_data(athletes_names):
@@ -153,12 +206,10 @@ def most_represented_countries(athletes_list):
 
 if __name__ == '__main__':
 
-    pass
-
-    # top_athletes_url = 'https://ivansmith.co.uk/?page_id=475'
-    # try:
-    #     athletes_names = get_athletes_names(top_athletes_url)
-    #     # athletes_data = collect_athletes_data(athletes_names)
-    #     # most_represented_countries(athletes_data)
-    # except RuntimeError as err:
-    #     stderr.write(f"Terminating the program due to the following runtime error:\n{err}")
+    top_athletes_url = 'https://ivansmith.co.uk/?page_id=475'
+    try:
+        athletes_names = get_athletes_names(top_athletes_url)
+        # athletes_data = collect_athletes_data(athletes_names)
+        # most_represented_countries(athletes_data)
+    except RuntimeError as err:
+        stderr.write(f"Terminating the program due to the following runtime error:\n{err}")
