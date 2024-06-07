@@ -5,7 +5,7 @@ LABs 12 & 13
 """
 Potrebno je napisati Python program (skriptu) koji određuje koje zemlje
 su dale veliki broj sportista i sportistkinja koji se smatraju među 100 
-najvećih sportistskih zvezda svih vremena. 
+najvećih sportistskih zvezda vremena. 
 Konkretno, program bi trebalo da uradi sledeće:
 - Prikupi imena sportista i sportistkinja sa Web stranice 
   "100 Greatest Sports Stars Ever": https://ivansmith.co.uk/?page_id=475
@@ -145,7 +145,6 @@ def from_csv(fpath):
     return None
 
 
-
 def collect_athletes_data(athletes_names):
     """
     The function puts several parts together:
@@ -157,7 +156,29 @@ def collect_athletes_data(athletes_names):
     :param athletes_names: list with athlete names
     :return: list of athlete name and origin pairs
     """
-    pass
+
+    print("\nCollecting data about the athletes' country of origin...")
+
+    webdriver = get_chrome_web_driver()
+    if not webdriver:
+        raise RuntimeError("An error occurred while setting up web driver!")
+
+    athletes_list = list()
+    not_found = list()
+    for name in athletes_names:
+        country = retrieve_country_of_origin(name, webdriver)
+        if country:
+            athletes_list.append((name, country))
+        else:
+            not_found.append(name)
+    print('...done')
+
+    to_csv(Path.cwd() / ORIGINS_CSV_FILE, ('athlete', 'origin'), athletes_list)
+
+    print(f"\nInformation about country of origin was not found for the following {len(not_found)} athletes:")
+    print(", ".join(not_found))
+
+    return athletes_list
 
 
 def retrieve_country_of_origin(name, web_driver):
@@ -170,7 +191,49 @@ def retrieve_country_of_origin(name, web_driver):
     :param web_driver: Selenium web driver to be used for scraping
     :return: country of birth (string) or None
     """
-    pass
+
+    print(f"Collecting data for {name}")
+
+    page_url = f"https://en.wikipedia.org/wiki/{name.replace(' ', '_')}"
+    web_driver.get(page_url)
+    page_content = web_driver.page_source
+    if not page_content:
+        stderr.write(f"Could not retrieve page for: {name}\n")
+        return None
+
+    page_soup = BeautifulSoup(page_content, features='html.parser')
+    if not page_soup:
+        stderr.write(f"Could not parse page for: {name}\n")
+        return None
+
+    info_box = page_soup.find('table', class_=lambda c: c and 'infobox' in c and 'vcard' in c)
+    if not info_box:
+        if page_soup.find('div', {'id':'disambigbox'}):
+            stderr.write(f"Arrived at disambiguation page for: {name}\n")
+        else:
+            stderr.write(f"No infobox data for: {name}\n")
+        return None
+
+    th_born = info_box.find('th', string=lambda t: t and ('born' in t.lower() or 'place of birth' in t.lower()))
+    if th_born:
+        td_born = th_born.find_next_sibling('td')
+        if td_born and td_born.strings:
+            return get_country_from_str(td_born.stripped_strings)
+    else:
+        bold_born = info_box.find(lambda b: b.name=='b' and b.parent.name=='td' and b.text and 'born' in b.text.lower())
+        if bold_born and bold_born.parent.strings:
+            return get_country_from_str(bold_born.parent.stripped_strings)
+
+    return None
+
+
+def get_country_from_str(country_string):
+    complete_string = "".join(country_string)
+    _, country = complete_string.rsplit(',', maxsplit=1)
+    # handling situations such as U.S.[a]
+    if '[' in country:
+        country, _ = country.split('[')
+    return country.rstrip(')').strip()
 
 
 def create_country_labels_mapping():
@@ -193,15 +256,37 @@ def create_country_labels_mapping():
     return country_lbls_dict
 
 
+
 def most_represented_countries(athletes_list):
     """
     Creates and prints a list of countries based on how well they
     are represented in the collected athletes data
-    
+
     :param athletes_list: list of athlete name and origin pairs
     :return: nothing
     """
-    pass
+    athletes_dict = dict()
+
+    country_lbls_dict = create_country_labels_mapping()
+    for athlete, country in athletes_list:
+        athletes_dict[athlete] = country
+        for c_name, c_labels in country_lbls_dict.items():
+            if country in c_labels:
+                athletes_dict[athlete] = c_name
+                break
+
+    # Option 1
+    from collections import defaultdict
+    country_counts = defaultdict(int)
+    for athlete, country in athletes_dict.items():
+        country_counts[country] += 1
+    # Option 2
+    # from collections import Counter
+    # country_counts = Counter(athletes_dict.values())
+
+    print("Number of top athletes per country of origin:")
+    for country, cnt in sorted(country_counts.items(), key=lambda item: item[1], reverse=True):
+        print(f"{country}: {cnt}")
 
 
 if __name__ == '__main__':
@@ -209,7 +294,7 @@ if __name__ == '__main__':
     top_athletes_url = 'https://ivansmith.co.uk/?page_id=475'
     try:
         athletes_names = get_athletes_names(top_athletes_url)
-        # athletes_data = collect_athletes_data(athletes_names)
-        # most_represented_countries(athletes_data)
+        athletes_data = collect_athletes_data(athletes_names)
+        most_represented_countries(athletes_data)
     except RuntimeError as err:
         stderr.write(f"Terminating the program due to the following runtime error:\n{err}")
